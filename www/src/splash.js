@@ -34,7 +34,7 @@ var SplashLayer = cc.Layer.extend({
                 //sprite.runAction(action_hide);
                 
                 //var delay = cc.DelayTime(1.0);
-        
+         
                 //var action = new cc.FadeTo.create(2.0,0);
                 //backgroundLayer.runAction(seq);
                 
