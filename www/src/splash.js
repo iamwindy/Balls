@@ -17,7 +17,24 @@ var SplashLayer = cc.Layer.extend({
                 backgroundLayer.setTag(1);
                 this.addChild(backgroundLayer,1);
                 
+                cc.audioEngine.playMusic(asset.Bg_music,true); 
+                if(window.music_enabled){
+                    cc.audioEngine.setMusicVolume(1);
+                    
+                }else{
+                    cc.audioEngine.setMusicVolume(0);
+                    cc.audioEngine.pauseMusic();
+                }
+                if(window.sound_enabled){
+                    cc.audioEngine.setEffectsVolume(1);
+                }else{
+                    cc.audioEngine.setEffectsVolume(0);
+                }
                 
+                //cc.audioEngine.setMusicVolume(0);
+                //cc.audioEngine.setMusicVolume(num);
+                
+                //this.schedule(fadeInMusic,0.5);
 
                 /*
                 var sprite = new cc.Sprite(asset.Menu_bg_png);

@@ -2,17 +2,20 @@
 var musicVolume = 0;
 var Settings_initialized = false;
 var Settings = null;
+var MusicButton;
+var SFXButton;
+var BackButton;
+var title;
+var sprite;
         var SettingsLayer = cc.Layer.extend({
             sprite:null,
             ctor:function () {
                 cc.log("settings loading started");
-                //////////////////////////////
-                // 1. super init first
                 this._super();
                 var parent = this;
                 var size = cc.winSize;
                 
-                var sprite = new cc.Sprite(asset.Menu_bg_red_png);
+                sprite = new cc.Sprite(asset.Menu_bg_red_png);
                 sprite.setTag(2);
                 sprite.attr({
                     x: size.width / 2,
@@ -21,113 +24,108 @@ var Settings = null;
                 
                 });
                 this.addChild(sprite,0);
-                    
-                /*
-                var helloLabel = new cc.LabelTTF("Balls!", "Arial", 70);
-                helloLabel.setColor(cc.color(255,255,0,255));
-                // position the label on the center of the screen
-                helloLabel.x = size.width / 2;
-                helloLabel.y = size.height*0.9;
-                // add the label as a child to this layer
-                this.addChild(helloLabel, 5);
-                */
                 
-                var title = new cc.Sprite(asset.Balls_png);
+                
+                title = new cc.Sprite(asset.Balls_png);
                 title.attr({
                     x: size.width/2,
-                    y: size.height/2,
-                    scale: 0
+                    y: size.height-90,
                 });
                 this.addChild(title,5);
-                var move_title_up_time = 0.5;
-                var scale_title_up_time = 0.5;
-                var delay_time = 1;
-                var total_title_animation = move_title_up_time + scale_title_up_time + delay_time;
-                var move_title_up = new cc.MoveTo.create(move_title_up_time,cc.p(size.width/2,size.height-90));
-                var scale_title_up = new cc.ScaleTo.create(scale_title_up_time,1,1);
-                var delay = new cc.DelayTime(delay_time);
-                //var animation1 = new cc.Animation.create(0,5);
-                
-                var seq = new cc.Sequence(scale_title_up,delay,move_title_up);
-                title.runAction(seq);
                 
                 cc.audioEngine.setMusicVolume(musicVolume);
+                //var musicLabel = new cc.LabelTTF("music", "Arial", 24);
+                //var sfxLabel = new cc.LabelTTF("sound effects","Arial",24);
+                var isMusicEnabledLabel = new cc.MenuItemFont.create("music");
+                var isSFXenabledLabel = new cc.MenuItemFont.create("sound effects");
+                isMusicEnabledLabel.setFontSize(36);
+                isSFXenabledLabel.setFontSize(36);
                 
-                //cc.audioEngine.setMusicVolume(num);
-                
-                this.schedule(fadeInMusic,0.1);
-                
-                var Settings_play = new cc.MenuItemFont.create("Play",function(){
-                    cc.log("Play");
-                    var action_fadeout = new cc.FadeOut.create(2.5);
-                    this.runAction(action_fadeout);
-                    this.schedule(fadeOutMusic,0.1);
-                    cc.audioEngine.stopMusic();
-                    musicVolume = 0;
-                    cc.director.pushScene(new cc.TransitionFade(0.5,new SettingsScene()) );
-                }.bind(this));
-                var high_score = new cc.MenuItemFont.create("Highscores",function(){
-                    cc.log("fadeout starting");
-                    this.schedule(fadeOutMusic,0.1);
-                }.bind(this));
-                var Settings_settings = new cc.MenuItemFont.create("Settings",function(){
-                    cc.log("fadein starting");
-                    parent.schedule(fadeInMusic,0.1);
-                });
+                /*
                 var exit_game = new cc.MenuItemFont.create("Back",function(){
                     cc.log("Back");
                     Settings_initialized = false;
-                    //cc.director.popScene();
-                    //cc.director.runScene(new cc.TransitionFade(0.5, cc.director.popSceneBack()));
-                    var nodeAction = new cc.FadeOut( 0.5 );
-                    var nodeAction2 = new cc.FadeOut(0.5);
-                    var nodeAction3 = new cc.FadeOut(0.5);
-                    //this.runAction( nodeAction );
+                    var timeToPop = 0.5;
+                    var nodeAction = new cc.FadeOut(timeToPop);
+                    var nodeAction2 = new cc.FadeOut(timeToPop);
+                    var nodeAction3 = new cc.FadeOut(timeToPop);
+                    var nodeAction4 = new cc.FadeOut(timeToPop);
+                    var nodeAction5 = new cc.FadeOut(timeToPop);
+                    SFXButton.runAction(nodeAction5);
+                    MusicButton.runAction(nodeAction4);
                     title.runAction(nodeAction3);
                     sprite.runAction(nodeAction2);
                     Settings.runAction(nodeAction);
-                    //this.removeAllChildren();
                     window.isPopped = true;
-                    /*var move_in_from_right = new cc.EaseExponentialOut(new cc.MoveTo(1,cc.p(0,0)));
-                var delay_Settings = new cc.DelayTime(total_title_animation-0.25);
-                var Settings_seq = new cc.Sequence(delay_Settings,move_in_from_right);
-                Settings.runAction(Settings_seq);
-                    
-                    */
-                    
                     
                     cc.log(cc.director.getRunningScene());
-                    this.scheduleOnce(popFade,0.5);
+                    this.scheduleOnce(popFade,timeToPop);
                     
                     
-                    //cc.director.pushScene(new cc.TransitionFade(0.5,new SettingsScene()) );
                 }.bind(this));
-                
-                Settings_play.setPosition(new cc.Point(size.width/2,size.height/10*5));
-                high_score.setPosition(new cc.Point(size.width/2,size.height/10*4));
-                Settings_settings.setPosition(new cc.Point(size.width/2,size.height/10*3));
-                exit_game.setPosition(new cc.Point(size.width/2,size.height/10*2));
-                //Settings_play.setColor(new cc.color(255,0,0,255));
-                
-                /*
-                var SettingsItem1 = new cc.MenuItemFont.create("Play Sound",this);
-                var SettingsItem2 = new cc.MenuItemFont.create("Play Song",this);
-                var SettingsItem3 = new cc.MenuItemFont.create("Stop Playing Song",this);
-                var SettingsItem4 = new cc.MenuItemFont.create("Exit",this);
-
-                SettingsItem1.setPosition(new cc.Point(size.width/2,size.height/2+50));
-                SettingsItem2.setPosition(new cc.Point(size.width/2,size.height/2));
-                SettingsItem3.setPosition(new cc.Point(size.width/2,size.height/2-50));
-                SettingsItem4.setPosition(new cc.Point(size.width/2,size.height/2-100));
                 */
-                Settings = new cc.Menu(Settings_play,high_score,Settings_settings,exit_game);
+                //isMusicEnabledLabel.setAnchorPoint(cc.p(0,0.5));
+                //isSFXenabledLabel.setAnchorPoint(cc.p(0,0.5));
+                isMusicEnabledLabel.setPosition(new cc.Point(size.width/8*3,size.height/2));
+                isSFXenabledLabel.setPosition(new cc.Point(size.width/8*3,size.height/3));
+                cc.log(isMusicEnabledLabel.getAnchorPoint());
+                //isMusicEnabledLabel.anchorPoint = 0;
+                //isSFXenabledLabel._setAnchorX=0;
+                //exit_game.setPosition(new cc.Point(size.width/2,size.height/10*2));
+                
+                
+                
+                
+                MusicButton = new ccui.CheckBox();
+                MusicButton.loadTextures(asset.checkbox_off,asset.checkbox_pressed,asset.checkbox_on);
+                MusicButton.x=size.width*1.8;
+                MusicButton.y = size.height/2;
+                if(window.music_enabled){
+                     MusicButton.setSelectedState(true);
+                }else{
+                    
+                    MusicButton.setSelectedState(false);   
+                }
+                
+                SFXButton = new ccui.CheckBox();
+                SFXButton.loadTextures(asset.checkbox_off,asset.checkbox_pressed,asset.checkbox_on);
+                SFXButton.x=size.width*1.8;
+                SFXButton.y = size.height/3;
+                if(window.sound_enabled){
+                     SFXButton.setSelectedState(true);
+                }else{
+                    
+                    SFXButton.setSelectedState(false);   
+                }
+                
+                BackButton = new ccui.Button();
+                BackButton.scale = 0.5;
+                BackButton.loadTextures( asset.back_button, asset.back_button );
+                BackButton.setPosition(cc.p(size.width*0.8,45));
+                
+                //MusicButton.setPosition(size.width/2,size.height/2);
+                MusicButton.addTouchEventListener(this.touchEvent, this);
+                this.addChild(MusicButton);
+                SFXButton.addTouchEventListener(this.touchEvent2, this);
+                this.addChild(SFXButton);
+                BackButton.addTouchEventListener(this.touchEventBack, this);
+                this.addChild(BackButton);
+                
+                Settings = new cc.Menu(isMusicEnabledLabel,isSFXenabledLabel/*,exit_game*/);
                 Settings.setPosition(cc.p(size.width,0));
                 this.addChild(Settings);
                 var move_in_from_right = new cc.EaseExponentialOut(new cc.MoveTo(1,cc.p(0,0)));
-                var delay_Settings = new cc.DelayTime(total_title_animation-0.25);
+                var delay_Settings = new cc.DelayTime(0.25);
                 var Settings_seq = new cc.Sequence(delay_Settings,move_in_from_right);
                 Settings.runAction(Settings_seq);
-                
+                var move_in_from_right2 = new cc.EaseExponentialOut(new cc.MoveTo(1,cc.p(size.width*0.8,size.height/2)));
+                var delay_Settings2 = new cc.DelayTime(0.5);
+                var Settings_seq2 = new cc.Sequence(delay_Settings2,move_in_from_right2);
+                var move_in_from_right3 = new cc.EaseExponentialOut(new cc.MoveTo(1,cc.p(size.width*0.8,size.height/3)));
+                var delay_Settings3 = new cc.DelayTime(0.5);
+                var Settings_seq3 = new cc.Sequence(delay_Settings3,move_in_from_right3);
+                MusicButton.runAction(Settings_seq2);
+                SFXButton.runAction(Settings_seq3);
 						
                 cc.eventManager.addListener({
                     event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -152,7 +150,92 @@ var Settings = null;
                 cc.log("settings loading finished");
                 return true;
 
-            },
+            },touchEvent: function(sender, type){
+                    switch(type){
+                        case ccui.CheckBox.EVENT_SELECTED:
+                            cc.log("sender "+sender);
+                            cc.log("selected" + type);
+                            cc.log("state: " + MusicButton.getSelectedState());
+                            if(MusicButton.getSelectedState()){
+                                //cc.audioEngine.pauseMusic();
+                                this.schedule(fadeOutMusic,0.1);
+                                window.music_enabled = 0;
+                            }else{
+                                //cc.audioEngine.resumeMusic();
+                                //cc.audioEngine.playMusic(asset.Bg_music,true);
+                                this.schedule(fadeInMusic,0.1);
+                                window.music_enabled = 1;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                },touchEvent2: function(sender, type){
+                    switch(type){
+                        case ccui.CheckBox.EVENT_SELECTED:
+                            cc.log("sender "+sender);
+                            cc.log("selected " + type);
+                            cc.log("state: " + SFXButton.getSelectedState());
+                            if(SFXButton.getSelectedState()){
+                                cc.audioEngine.setEffectsVolume(0);
+                                window.sound_enabled = 0;
+                            }else{
+                                cc.audioEngine.setEffectsVolume(1);
+                                window.sound_enabled = 1;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                },touchEventBack: function(sender,type){
+                    switch(type){
+                        case ccui.Widget.TOUCH_BEGAN:
+                            cc.log("back button pressed");
+                            BackButton.scale = 0.65;
+                            BackButton.setPosition(cc.p(cc.winSize.width*0.8,59));
+                            break;
+
+                        case ccui.Widget.TOUCH_MOVED:
+                            // code to handle when the user is moving their finger/cursor whilst clicking the button
+
+                            break;
+
+                        case ccui.Widget.TOUCH_ENDED:
+                            // code to handle when the button click has ended (e.g. finger is lifted off the screen)        
+                            cc.log("back button released");
+                            BackButton.setPosition(cc.p(cc.winSize.width*0.8,45));
+                            BackButton.scale = 0.5;
+                            
+                            
+                            cc.log("Back");
+                            Settings_initialized = false;
+                            var timeToPop = 0.5;
+                            var nodeAction = new cc.FadeOut(timeToPop);
+                            var nodeAction2 = new cc.FadeOut(timeToPop);
+                            var nodeAction3 = new cc.FadeOut(timeToPop);
+                            var nodeAction4 = new cc.FadeOut(timeToPop);
+                            var nodeAction5 = new cc.FadeOut(timeToPop);
+                            var nodeAction6 = new cc.FadeOut(timeToPop);
+                            BackButton.runAction(nodeAction6);
+                            SFXButton.runAction(nodeAction5);
+                            MusicButton.runAction(nodeAction4);
+                            title.runAction(nodeAction3);
+                            sprite.runAction(nodeAction2);
+                            Settings.runAction(nodeAction);
+                            window.isPopped = true;
+
+                            cc.log(cc.director.getRunningScene());
+                            cc.audioEngine.playEffect(asset.menu_back);
+                            this.scheduleOnce(popFade,timeToPop);
+                            
+                            break;
+
+                        case ccui.Widget.TOUCH_CANCELLED:
+                            // code to handle when the button click has been cancelled,  this is usually handled the same way as ENDED in most applications (e.g. another application takes control of the device)
+
+                            break;   
+                    }
+                }
             
         });
         
@@ -189,7 +272,7 @@ var Settings = null;
                     
                     this.addChild(layer);    
                 }
-                
+                cc.log(cc.director.getRunningScene());
             }
         });
 

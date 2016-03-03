@@ -53,33 +53,49 @@ var layer;
                 
                 var seq = new cc.Sequence(scale_title_up,delay,move_title_up);
                 title.runAction(seq);
+                if(window.music_enabled){
+                    musicVolume = 1;    
+                }else{
+                    musicVolume = 0;
+                }
                 
                 cc.audioEngine.setMusicVolume(musicVolume);
-                cc.audioEngine.playMusic(asset.Bg_music,true);
+                //cc.audioEngine.playMusic(asset.Bg_music,true);
                 
                 //cc.audioEngine.setMusicVolume(num);
                 
-                this.schedule(fadeInMusic,0.1);
+                //this.schedule(fadeInMusic,0.1);
                 
+                
+                cc.log("is music playing? " + cc.audioEngine.isMusicPlaying());
                 var menu_play = new cc.MenuItemFont.create("Play",function(){
                     cc.log("Play");
                     var action_fadeout = new cc.FadeOut.create(2.5);
                     this.runAction(action_fadeout);
                     this.schedule(fadeOutMusic,0.1);
                     cc.audioEngine.stopMusic();
-                    musicVolume = 0;
-                    cc.director.pushScene(new cc.TransitionFade(0.5,new MenuScene()) );
+                    var delay = new cc.DelayTime(0.5);
+                    var playsound = new cc.CallFunc(function(){
+                        cc.audioEngine.playEffect(asset.Game_start,false);
+                    });
+                    //var playsound = new cc.audioEngine.playEffect(asset.Game_start,false);
+                    var sequence = new cc.Sequence(delay,playsound);
+                    this.runAction(sequence);
+                    //cc.director.pushScene(new cc.TransitionFade(0.5,new MenuScene()) );
                 }.bind(this));
                 var high_score = new cc.MenuItemFont.create("Highscores",function(){
-                    cc.log("fadeout starting");
-                    this.schedule(fadeOutMusic,0.1);
+                    cc.log("highscore");
+                    cc.audioEngine.playEffect(asset.item_selected);
+                    //this.schedule(fadeOutMusic,0.1);
                 }.bind(this));
                 var menu_settings = new cc.MenuItemFont.create("Settings",function(){
-                    cc.log("fadein starting");
-                    //parent.schedule(fadeInMusic,0.1);
+                    cc.log("settings");
+                    cc.audioEngine.playEffect(asset.item_selected);
                     cc.director.pushScene(new cc.TransitionFade(0.5,new SettingsScene()) );
                 });
-                var exit_game = new cc.MenuItemFont.create("Exit",exit);
+                var exit_game = new cc.MenuItemFont.create("Exit",function(){
+                    cc.director.end();
+                });
                 
                 menu_play.setPosition(new cc.Point(size.width/2,size.height/10*5));
                 high_score.setPosition(new cc.Point(size.width/2,size.height/10*4));
@@ -130,7 +146,7 @@ var layer;
                 cc.log("menu loading finished");
                 return true;
 
-            },fadeAfterPop:function(){
+            },fadeInAfterPop:function(){
                 cc.log("after pop");
                 var backgroundLayer = new cc.LayerColor.create();
                 backgroundLayer.changeWidthAndHeight(cc.winSize.width, cc.winSize.height);
@@ -185,8 +201,9 @@ var layer;
             if(!cc.audioEngine.isMusicPlaying()){
                 cc.audioEngine.resumeMusic();
             }
-            cc.log(musicVolume);
+            
             cc.audioEngine.setMusicVolume(musicVolume);
+            cc.log(musicVolume);
             musicVolume+=0.2;
             if(musicVolume>=1.0){
                 musicVolume = 1;
@@ -197,8 +214,9 @@ var layer;
 
         };
         var fadeOutMusic = function(){
-
-            //cc.audioEngine.setMusicVolume(musicVolume);
+            
+            cc.audioEngine.setMusicVolume(musicVolume);
+            cc.log(musicVolume);
             musicVolume-=0.2;
             if(musicVolume<=0){
                 musicVolume = 0;
@@ -229,7 +247,7 @@ var layer;
                 }
                 if(window.isPopped){
                     window.isPopped = !window.isPopped;
-                    layer.fadeAfterPop();
+                    layer.fadeInAfterPop();
                 }
                 cc.log(cc.director.getRunningScene());
                 
