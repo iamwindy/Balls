@@ -13,6 +13,7 @@
     "jsList" : [
         "src/resource.js",
         "src/menu.js",
-        "src/splash.js"
+        "src/splash.js",
+        "src/settings.js"
     ]
 }
