@@ -1,5 +1,5 @@
 /*jshint -W117*/
-var musicVolume = 0;
+var musicVolume;
 var Menu_initialized = false;
 var menu = null;
 var layer;
@@ -60,11 +60,6 @@ var layer;
                 }
                 
                 cc.audioEngine.setMusicVolume(musicVolume);
-                //cc.audioEngine.playMusic(asset.Bg_music,true);
-                
-                //cc.audioEngine.setMusicVolume(num);
-                
-                //this.schedule(fadeInMusic,0.1);
                 
                 
                 cc.log("is music playing? " + cc.audioEngine.isMusicPlaying());
@@ -101,19 +96,7 @@ var layer;
                 high_score.setPosition(new cc.Point(size.width/2,size.height/10*4));
                 menu_settings.setPosition(new cc.Point(size.width/2,size.height/10*3));
                 exit_game.setPosition(new cc.Point(size.width/2,size.height/10*2));
-                //menu_play.setColor(new cc.color(255,0,0,255));
                 
-                /*
-                var menuItem1 = new cc.MenuItemFont.create("Play Sound",this);
-                var menuItem2 = new cc.MenuItemFont.create("Play Song",this);
-                var menuItem3 = new cc.MenuItemFont.create("Stop Playing Song",this);
-                var menuItem4 = new cc.MenuItemFont.create("Exit",this);
-
-                menuItem1.setPosition(new cc.Point(size.width/2,size.height/2+50));
-                menuItem2.setPosition(new cc.Point(size.width/2,size.height/2));
-                menuItem3.setPosition(new cc.Point(size.width/2,size.height/2-50));
-                menuItem4.setPosition(new cc.Point(size.width/2,size.height/2-100));
-                */
                 menu = new cc.Menu(menu_play,high_score,menu_settings,exit_game);
                 menu.setPosition(cc.p(size.width,0));
                 this.addChild(menu);
@@ -141,7 +124,6 @@ var layer;
                         //cc.log("Cancelled X: "+touch.getLocationX()+"Y: "+touch.getLocationY());
                     }
                 },this);
-                //this.scheduleOnce(stopMusic,30);
                 
                 cc.log("menu loading finished");
                 return true;
@@ -152,30 +134,11 @@ var layer;
                 backgroundLayer.changeWidthAndHeight(cc.winSize.width, cc.winSize.height);
                 backgroundLayer.setColor(cc.color(0, 0, 0,255));
                 this.addChild(backgroundLayer,100);
-                var nodeAction = new cc.FadeOut( 0.5 );
+                var nodeAction = new cc.FadeOut( 0.25 );
                 backgroundLayer.runAction(nodeAction);
                 
             }
-            /*play:function(){
-                cc.log("Play");
-                var action_fadeout = new cc.FadeOut.create(2.5);
-                menu.runAction(action_fadeout);
-                cc.director.runScene(new cc.TransitionFade(0.5,new MenuScene()) );
-                
-                //this.removeChildByTag(1,true);
-            }*/
         });
-        /*
-        var play=function(parent){
-            cc.log("Play");
-            var action_fadeout = new cc.FadeOut.create(2.5);
-            menu.runAction(action_fadeout);
-            parent.schedule(fadeOutMusic,0,1);
-            cc.audioEngine.stopMusic();
-            //this.schedule(fadeOutMusic,0,1);
-            cc.director.pushScene(new cc.TransitionFade(0.5,new MenuScene()) );
-        };
-        */
 
         var highscore=function(){
             cc.log("HighScore");
@@ -208,6 +171,7 @@ var layer;
             if(musicVolume>=1.0){
                 musicVolume = 1;
                 cc.audioEngine.setMusicVolume(musicVolume);
+                cc.log(musicVolume);
                 this.unschedule(fadeInMusic);
 
             }
@@ -221,6 +185,7 @@ var layer;
             if(musicVolume<=0){
                 musicVolume = 0;
                 cc.audioEngine.setMusicVolume(musicVolume);
+                cc.log(musicVolume);
                 cc.audioEngine.pauseMusic();
                     
                 this.unschedule(fadeOutMusic);

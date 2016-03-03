@@ -77,8 +77,8 @@ cc.game.onStart = function(){
         // load and run the HelloWorldScene
         // see www/src/app.js for definition
         var splash = new SplashScene();
-        window.sound_enabled = false;
-        window.music_enabled = false;
+        window.sound_enabled = true;
+        window.music_enabled = true;
         window.isPopped = false;
         
         cc.director.runScene(new cc.TransitionFade(1.5,splash) );

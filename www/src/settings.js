@@ -41,40 +41,8 @@ var sprite;
                 isMusicEnabledLabel.setFontSize(36);
                 isSFXenabledLabel.setFontSize(36);
                 
-                /*
-                var exit_game = new cc.MenuItemFont.create("Back",function(){
-                    cc.log("Back");
-                    Settings_initialized = false;
-                    var timeToPop = 0.5;
-                    var nodeAction = new cc.FadeOut(timeToPop);
-                    var nodeAction2 = new cc.FadeOut(timeToPop);
-                    var nodeAction3 = new cc.FadeOut(timeToPop);
-                    var nodeAction4 = new cc.FadeOut(timeToPop);
-                    var nodeAction5 = new cc.FadeOut(timeToPop);
-                    SFXButton.runAction(nodeAction5);
-                    MusicButton.runAction(nodeAction4);
-                    title.runAction(nodeAction3);
-                    sprite.runAction(nodeAction2);
-                    Settings.runAction(nodeAction);
-                    window.isPopped = true;
-                    
-                    cc.log(cc.director.getRunningScene());
-                    this.scheduleOnce(popFade,timeToPop);
-                    
-                    
-                }.bind(this));
-                */
-                //isMusicEnabledLabel.setAnchorPoint(cc.p(0,0.5));
-                //isSFXenabledLabel.setAnchorPoint(cc.p(0,0.5));
                 isMusicEnabledLabel.setPosition(new cc.Point(size.width/8*3,size.height/2));
                 isSFXenabledLabel.setPosition(new cc.Point(size.width/8*3,size.height/3));
-                cc.log(isMusicEnabledLabel.getAnchorPoint());
-                //isMusicEnabledLabel.anchorPoint = 0;
-                //isSFXenabledLabel._setAnchorX=0;
-                //exit_game.setPosition(new cc.Point(size.width/2,size.height/10*2));
-                
-                
-                
                 
                 MusicButton = new ccui.CheckBox();
                 MusicButton.loadTextures(asset.checkbox_off,asset.checkbox_pressed,asset.checkbox_on);
@@ -126,26 +94,7 @@ var sprite;
                 var Settings_seq3 = new cc.Sequence(delay_Settings3,move_in_from_right3);
                 MusicButton.runAction(Settings_seq2);
                 SFXButton.runAction(Settings_seq3);
-						
-                cc.eventManager.addListener({
-                    event: cc.EventListener.TOUCH_ONE_BY_ONE,
-                    onTouchBegan:function(touch,event){
-                        //cc.log("Began X: "+touch.getLocationX()+"Y: "+touch.getLocationY());
-                        return true;
-                    },
-                    onTouchMoved:function(touch,event){
-                        //cc.log("Moved X: "+touch.getLocationX()+"Y: "+touch.getLocationY());
-                        
-                    },
-                    onTouchEnded:function(touch,event){
-                        //cc.log("Ended X: "+touch.getLocationX()+"Y: "+touch.getLocationY());
-                        return true;
-                    },
-                    onTouchCancelled:function(touch, event){
-                        //cc.log("Cancelled X: "+touch.getLocationX()+"Y: "+touch.getLocationY());
-                    }
-                },this);
-                //this.scheduleOnce(stopMusic,30);
+				
                 
                 cc.log("settings loading finished");
                 return true;
@@ -158,7 +107,7 @@ var sprite;
                             cc.log("state: " + MusicButton.getSelectedState());
                             if(MusicButton.getSelectedState()){
                                 //cc.audioEngine.pauseMusic();
-                                this.schedule(fadeOutMusic,0.1);
+                                this.schedule(fadeOutMusic,0.02);
                                 window.music_enabled = 0;
                             }else{
                                 //cc.audioEngine.resumeMusic();
@@ -195,11 +144,6 @@ var sprite;
                             BackButton.setPosition(cc.p(cc.winSize.width*0.8,59));
                             break;
 
-                        case ccui.Widget.TOUCH_MOVED:
-                            // code to handle when the user is moving their finger/cursor whilst clicking the button
-
-                            break;
-
                         case ccui.Widget.TOUCH_ENDED:
                             // code to handle when the button click has ended (e.g. finger is lifted off the screen)        
                             cc.log("back button released");
@@ -209,19 +153,16 @@ var sprite;
                             
                             cc.log("Back");
                             Settings_initialized = false;
-                            var timeToPop = 0.5;
-                            var nodeAction = new cc.FadeOut(timeToPop);
-                            var nodeAction2 = new cc.FadeOut(timeToPop);
-                            var nodeAction3 = new cc.FadeOut(timeToPop);
-                            var nodeAction4 = new cc.FadeOut(timeToPop);
-                            var nodeAction5 = new cc.FadeOut(timeToPop);
-                            var nodeAction6 = new cc.FadeOut(timeToPop);
-                            BackButton.runAction(nodeAction6);
-                            SFXButton.runAction(nodeAction5);
-                            MusicButton.runAction(nodeAction4);
-                            title.runAction(nodeAction3);
-                            sprite.runAction(nodeAction2);
-                            Settings.runAction(nodeAction);
+                            var timeToPop = 0.25;
+                            
+                            var backgroundLayer = new cc.LayerColor.create();
+                            backgroundLayer.changeWidthAndHeight(cc.winSize.width, cc.winSize.height);
+                            backgroundLayer.setColor(cc.color(0, 0, 0,255));
+                            backgroundLayer.opacity = 0;
+                            this.addChild(backgroundLayer,100);
+                            var nodeAction = new cc.FadeIn( timeToPop );
+                            backgroundLayer.runAction(nodeAction);
+                            
                             window.isPopped = true;
 
                             cc.log(cc.director.getRunningScene());
@@ -229,11 +170,9 @@ var sprite;
                             this.scheduleOnce(popFade,timeToPop);
                             
                             break;
+                        default:
+                            break;
 
-                        case ccui.Widget.TOUCH_CANCELLED:
-                            // code to handle when the button click has been cancelled,  this is usually handled the same way as ENDED in most applications (e.g. another application takes control of the device)
-
-                            break;   
                     }
                 }
             
@@ -258,7 +197,6 @@ var sprite;
             Settings_initialized = false;
             cc.log("Settings Initialized after pop: "+Settings_initialized);
             cc.director.popScene();
-            //cc.director.pushScene(new cc.TransitionFade(0.5,new SettingsScene()) );
         };
 
 
